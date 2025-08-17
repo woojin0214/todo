@@ -100,44 +100,17 @@ header h1 {
     box-shadow: 0 6px 20px rgba(108, 92, 231, 0.4);
 }
 
-/* 뷰 전환 버튼 */
-.view-toggle {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 30px;
-    gap: 10px;
-}
 
-.view-toggle button {
-    padding: 12px 25px;
-    border: 2px solid #a29bfe;
-    background: white;
-    color: #6c5ce7;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 600;
-}
-
-.view-toggle button.active,
-.view-toggle button:hover {
-    background: #a29bfe;
-    color: white;
-    transform: translateY(-2px);
-}
 
 /* 뷰 섹션 */
 .view-section {
-    display: none;
+    display: block;
     background: rgba(255, 255, 255, 0.9);
     padding: 30px;
     border-radius: 20px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.1);
     backdrop-filter: blur(10px);
-}
-
-.view-section.active {
-    display: block;
+    margin-bottom: 30px;
 }
 
 .view-section h2 {
@@ -164,6 +137,22 @@ header h1 {
     gap: 15px;
     transition: all 0.3s ease;
     border-left: 4px solid #a29bfe;
+}
+
+.todo-clickable {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex: 1;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.todo-clickable:hover {
+    background: #f8f9fa;
+    transform: translateX(5px);
 }
 
 .todo-item.priority-high {
@@ -376,6 +365,13 @@ header h1 {
     overflow: hidden;
     text-overflow: ellipsis;
     transition: all 0.3s ease;
+    cursor: pointer;
+    user-select: none;
+}
+
+.calendar-todo-item:hover {
+    background: #6c5ce7;
+    transform: scale(1.02);
 }
 
 .calendar-todo-item.completed {
@@ -443,6 +439,22 @@ header h1 {
     gap: 12px;
     transition: all 0.3s ease;
     border-left: 3px solid #a29bfe;
+}
+
+.calendar-todo-clickable {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.calendar-todo-clickable:hover {
+    background: #f8f9fa;
+    transform: translateX(3px);
 }
 
 .calendar-todo-item-compact.priority-high {

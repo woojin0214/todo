@@ -13,9 +13,6 @@ class TodoApp {
         this.renderTodoList();
         this.renderCalendar();
         this.setDefaultDate();
-        
-        // 초기 뷰를 달력으로 설정
-        this.switchView('calendar');
     }
 
     // 기존 할 일 데이터 마이그레이션
@@ -40,8 +37,6 @@ class TodoApp {
         this.todoPriority = document.getElementById('todoPriority');
         this.addBtn = document.getElementById('addBtn');
         this.todoList = document.getElementById('todoList');
-        this.listViewBtn = document.getElementById('listViewBtn');
-        this.calendarViewBtn = document.getElementById('calendarViewBtn');
         this.listView = document.getElementById('listView');
         this.calendarView = document.getElementById('calendarView');
         this.calendarDays = document.getElementById('calendarDays');
@@ -63,9 +58,6 @@ class TodoApp {
         this.todoInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.addTodo();
         });
-        
-        this.listViewBtn.addEventListener('click', () => this.switchView('list'));
-        this.calendarViewBtn.addEventListener('click', () => this.switchView('calendar'));
         
         this.prevMonthBtn.addEventListener('click', () => this.changeMonth(-1));
         this.nextMonthBtn.addEventListener('click', () => this.changeMonth(1));
@@ -180,20 +172,7 @@ class TodoApp {
         }
     }
 
-    // 뷰 전환
-    switchView(view) {
-        if (view === 'list') {
-            this.listView.classList.add('active');
-            this.calendarView.classList.remove('active');
-            this.listViewBtn.classList.add('active');
-            this.calendarViewBtn.classList.remove('active');
-        } else {
-            this.listView.classList.remove('active');
-            this.calendarView.classList.add('active');
-            this.listViewBtn.classList.remove('active');
-            this.calendarViewBtn.classList.add('active');
-        }
-    }
+
 
     // 달력 월 변경
     changeMonth(delta) {
@@ -227,11 +206,13 @@ class TodoApp {
         
         this.todoList.innerHTML = sortedTodos.map(todo => `
             <div class="todo-item ${todo.completed ? 'completed' : ''} priority-${todo.priority || 'medium'}">
-                <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''} 
-                       onchange="todoApp.toggleTodo(${todo.id})">
-                <div class="todo-text">${this.escapeHtml(todo.text)}</div>
-                <div class="todo-priority ${todo.priority || 'medium'}">${this.getPriorityText(todo.priority)}</div>
-                <div class="todo-date">${this.formatDate(todo.date)}</div>
+                <div class="todo-clickable" onclick="todoApp.toggleTodo(${todo.id})">
+                    <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''} 
+                           onchange="todoApp.toggleTodo(${todo.id})" onclick="event.stopPropagation()">
+                    <div class="todo-text">${this.escapeHtml(todo.text)}</div>
+                    <div class="todo-priority ${todo.priority || 'medium'}">${this.getPriorityText(todo.priority)}</div>
+                    <div class="todo-date">${this.formatDate(todo.date)}</div>
+                </div>
                 <div class="todo-actions">
                     <button class="edit-btn" onclick="todoApp.editTodo(${JSON.stringify(todo).replace(/"/g, '&quot;')})">수정</button>
                     <button class="delete-btn" onclick="todoApp.deleteTodo(${todo.id})">삭제</button>
@@ -294,7 +275,10 @@ class TodoApp {
                     <div class="calendar-day-number">${currentDate.getDate()}</div>
                     <div class="calendar-todos">
                         ${sortedDayTodos.map(todo => `
-                            <div class="calendar-todo-item ${todo.completed ? 'completed' : ''}" title="${this.escapeHtml(todo.text)}">
+                            <div class="calendar-todo-item ${todo.completed ? 'completed' : ''}" 
+                                 title="${this.escapeHtml(todo.text)}"
+                                 onclick="todoApp.toggleTodo(${todo.id})"
+                                 style="cursor: pointer;">
                                 <span class="calendar-todo-priority-badge ${todo.priority || 'medium'}">${this.getPriorityText(todo.priority)}</span>
                                 ${this.escapeHtml(todo.text)}
                             </div>
@@ -354,11 +338,13 @@ class TodoApp {
         
         this.calendarTodoList.innerHTML = sortedTodos.map(todo => `
             <div class="calendar-todo-item-compact ${todo.completed ? 'completed' : ''} priority-${todo.priority || 'medium'}">
-                <input type="checkbox" class="calendar-todo-checkbox" ${todo.completed ? 'checked' : ''} 
-                       onchange="todoApp.toggleTodo(${todo.id})">
-                <div class="calendar-todo-text">${this.escapeHtml(todo.text)}</div>
-                <div class="calendar-todo-priority ${todo.priority || 'medium'}">${this.getPriorityText(todo.priority)}</div>
-                <div class="calendar-todo-date">${this.formatDate(todo.date)}</div>
+                <div class="calendar-todo-clickable" onclick="todoApp.toggleTodo(${todo.id})">
+                    <input type="checkbox" class="calendar-todo-checkbox" ${todo.completed ? 'checked' : ''} 
+                           onchange="todoApp.toggleTodo(${todo.id})" onclick="event.stopPropagation()">
+                    <div class="calendar-todo-text">${this.escapeHtml(todo.text)}</div>
+                    <div class="calendar-todo-priority ${todo.priority || 'medium'}">${this.getPriorityText(todo.priority)}</div>
+                    <div class="calendar-todo-date">${this.formatDate(todo.date)}</div>
+                </div>
                 <div class="calendar-todo-actions">
                     <button class="calendar-todo-edit-btn" onclick="todoApp.editTodo(${JSON.stringify(todo).replace(/"/g, '&quot;')})">수정</button>
                     <button class="calendar-todo-delete-btn" onclick="todoApp.deleteTodo(${todo.id})">삭제</button>
