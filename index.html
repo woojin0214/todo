@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>투두리스트</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>투두리스트</h1>
+        </header>
+        
+        <main>
+            <!-- 할 일 추가 섹션 -->
+            <section class="add-todo">
+                <div class="input-group">
+                    <input type="text" id="todoInput" placeholder="할 일을 입력하세요...">
+                    <input type="date" id="todoDate">
+                    <select id="todoPriority">
+                        <option value="low">낮음</option>
+                        <option value="medium" selected>보통</option>
+                        <option value="high">높음</option>
+                    </select>
+                    <button id="addBtn">추가</button>
+                </div>
+            </section>
+
+            <!-- 뷰 전환 버튼 -->
+            <section class="view-toggle">
+                <button id="listViewBtn" class="active">리스트 보기</button>
+                <button id="calendarViewBtn">달력 보기</button>
+            </section>
+
+            <!-- 리스트 뷰 -->
+            <section id="listView" class="view-section active">
+                <h2>할 일 목록</h2>
+                <div id="todoList" class="todo-list">
+                    <!-- 할 일들이 여기에 동적으로 추가됩니다 -->
+                </div>
+            </section>
+
+            <!-- 달력 뷰 -->
+            <section id="calendarView" class="view-section">
+                <h2>달력 보기</h2>
+                <div class="calendar-header">
+                    <button id="prevMonth">&lt;</button>
+                    <h3 id="currentMonth">2024년 1월</h3>
+                    <button id="nextMonth">&gt;</button>
+                </div>
+                <div class="calendar">
+                    <div class="calendar-weekdays">
+                        <div>일</div>
+                        <div>월</div>
+                        <div>화</div>
+                        <div>수</div>
+                        <div>목</div>
+                        <div>금</div>
+                        <div>토</div>
+                    </div>
+                    <div id="calendarDays" class="calendar-days">
+                        <!-- 달력 날짜들이 여기에 동적으로 추가됩니다 -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- 할 일 수정 모달 -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <h3>할 일 수정</h3>
+            <input type="text" id="editInput" placeholder="할 일을 입력하세요...">
+            <input type="date" id="editDate">
+            <select id="editPriority">
+                <option value="low">낮음</option>
+                <option value="medium">보통</option>
+                <option value="high">높음</option>
+            </select>
+            <div class="modal-buttons">
+                <button id="saveEdit">저장</button>
+                <button id="cancelEdit">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
