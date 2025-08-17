@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <header>
-            <h1>To-Do리스트</h1>
+            <h1>To-Do list</h1>
         </header>
         
         <main>
@@ -29,12 +29,12 @@
 
             <!-- 뷰 전환 버튼 -->
             <section class="view-toggle">
-                <button id="listViewBtn" class="active">리스트 보기</button>
-                <button id="calendarViewBtn">달력 보기</button>
+                <button id="listViewBtn">리스트 보기</button>
+                <button id="calendarViewBtn" class="active">달력 보기</button>
             </section>
 
             <!-- 리스트 뷰 -->
-            <section id="listView" class="view-section active">
+            <section id="listView" class="view-section">
                 <h2>할 일 목록</h2>
                 <div id="todoList" class="todo-list">
                     <!-- 할 일들이 여기에 동적으로 추가됩니다 -->
@@ -42,7 +42,7 @@
             </section>
 
             <!-- 달력 뷰 -->
-            <section id="calendarView" class="view-section">
+            <section id="calendarView" class="view-section active">
                 <h2>달력 보기</h2>
                 <div class="calendar-header">
                     <button id="prevMonth">&lt;</button>
@@ -61,6 +61,14 @@
                     </div>
                     <div id="calendarDays" class="calendar-days">
                         <!-- 달력 날짜들이 여기에 동적으로 추가됩니다 -->
+                    </div>
+                </div>
+                
+                <!-- 달력 아래 할일 목록 -->
+                <div class="calendar-todo-list-section">
+                    <h3>이번 달 할일 목록</h3>
+                    <div id="calendarTodoList" class="calendar-todo-list">
+                        <!-- 달력 뷰의 할일 목록이 여기에 표시됩니다 -->
                     </div>
                 </div>
             </section>

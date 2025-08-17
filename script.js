@@ -13,6 +13,9 @@ class TodoApp {
         this.renderTodoList();
         this.renderCalendar();
         this.setDefaultDate();
+        
+        // 초기 뷰를 달력으로 설정
+        this.switchView('calendar');
     }
 
     // 기존 할 일 데이터 마이그레이션
@@ -42,6 +45,7 @@ class TodoApp {
         this.listView = document.getElementById('listView');
         this.calendarView = document.getElementById('calendarView');
         this.calendarDays = document.getElementById('calendarDays');
+        this.calendarTodoList = document.getElementById('calendarTodoList');
         this.currentMonthElement = document.getElementById('currentMonth');
         this.prevMonthBtn = document.getElementById('prevMonth');
         this.nextMonthBtn = document.getElementById('nextMonth');
@@ -262,6 +266,23 @@ class TodoApp {
             const dateString = this.formatDateForCalendar(currentDate);
             const dayTodos = this.getTodosForDate(dateString);
             
+            // 할일을 완료 상태와 중요도별로 정렬
+            const sortedDayTodos = [...dayTodos].sort((a, b) => {
+                // 먼저 완료 상태로 정렬 (미완료가 위, 완료가 아래)
+                if (a.completed !== b.completed) {
+                    return a.completed ? 1 : -1;
+                }
+                // 완료 상태가 같으면 중요도별로 정렬 (높음 > 보통 > 낮음)
+                const priorityOrder = { high: 3, medium: 2, low: 1 };
+                const aPriority = priorityOrder[a.priority || 'medium'];
+                const bPriority = priorityOrder[b.priority || 'medium'];
+                if (aPriority !== bPriority) {
+                    return bPriority - aPriority;
+                }
+                // 중요도가 같으면 날짜별로 정렬
+                return new Date(a.date) - new Date(b.date);
+            });
+            
             const dayClass = [
                 'calendar-day',
                 isCurrentMonth ? '' : 'other-month',
@@ -272,8 +293,9 @@ class TodoApp {
                 <div class="${dayClass}">
                     <div class="calendar-day-number">${currentDate.getDate()}</div>
                     <div class="calendar-todos">
-                        ${dayTodos.map(todo => `
-                            <div class="calendar-todo-item" title="${this.escapeHtml(todo.text)}">
+                        ${sortedDayTodos.map(todo => `
+                            <div class="calendar-todo-item ${todo.completed ? 'completed' : ''}" title="${this.escapeHtml(todo.text)}">
+                                <span class="calendar-todo-priority-badge ${todo.priority || 'medium'}">${this.getPriorityText(todo.priority)}</span>
                                 ${this.escapeHtml(todo.text)}
                             </div>
                         `).join('')}
@@ -283,11 +305,66 @@ class TodoApp {
         }
         
         this.calendarDays.innerHTML = calendarHTML;
+        
+        // 달력 아래 할일 목록도 렌더링
+        this.renderCalendarTodoList();
     }
 
     // 특정 날짜의 할 일 가져오기
     getTodosForDate(dateString) {
         return this.todos.filter(todo => todo.date === dateString);
+    }
+
+    // 현재 월의 모든 할 일 가져오기
+    getTodosForCurrentMonth() {
+        const year = this.currentDate.getFullYear();
+        const month = this.currentDate.getMonth();
+        
+        return this.todos.filter(todo => {
+            const todoDate = new Date(todo.date);
+            return todoDate.getFullYear() === year && todoDate.getMonth() === month;
+        });
+    }
+
+    // 달력 아래 할일 목록 렌더링
+    renderCalendarTodoList() {
+        const monthTodos = this.getTodosForCurrentMonth();
+        
+        if (monthTodos.length === 0) {
+            this.calendarTodoList.innerHTML = '<p style="text-align: center; color: #666; font-style: italic;">이번 달에 등록된 할 일이 없습니다.</p>';
+            return;
+        }
+
+        // 중요도, 완료 상태, 날짜별로 정렬
+        const sortedTodos = [...monthTodos].sort((a, b) => {
+            // 먼저 완료 상태로 정렬 (미완료가 위, 완료가 아래)
+            if (a.completed !== b.completed) {
+                return a.completed ? 1 : -1;
+            }
+            // 완료 상태가 같으면 중요도별로 정렬 (높음 > 보통 > 낮음)
+            const priorityOrder = { high: 3, medium: 2, low: 1 };
+            const aPriority = priorityOrder[a.priority || 'medium'];
+            const bPriority = priorityOrder[b.priority || 'medium'];
+            if (aPriority !== bPriority) {
+                return bPriority - aPriority;
+            }
+            // 중요도가 같으면 날짜별로 정렬
+            return new Date(a.date) - new Date(b.date);
+        });
+        
+        this.calendarTodoList.innerHTML = sortedTodos.map(todo => `
+            <div class="calendar-todo-item-compact ${todo.completed ? 'completed' : ''} priority-${todo.priority || 'medium'}">
+                <input type="checkbox" class="calendar-todo-checkbox" ${todo.completed ? 'checked' : ''} 
+                       onchange="todoApp.toggleTodo(${todo.id})">
+                <div class="calendar-todo-text">${this.escapeHtml(todo.text)}</div>
+                <div class="calendar-todo-priority ${todo.priority || 'medium'}">${this.getPriorityText(todo.priority)}</div>
+                <div class="calendar-todo-date">${this.formatDate(todo.date)}</div>
+                <div class="calendar-todo-actions">
+                    <button class="calendar-todo-edit-btn" onclick="todoApp.editTodo(${JSON.stringify(todo).replace(/"/g, '&quot;')})">수정</button>
+                    <button class="calendar-todo-delete-btn" onclick="todoApp.deleteTodo(${todo.id})">삭제</button>
+                </div>
+            </div>
+        `).join('');
     }
 
     // 날짜 비교 (년, 월, 일만)
